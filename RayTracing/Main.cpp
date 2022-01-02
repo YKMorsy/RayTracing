@@ -42,21 +42,6 @@ int main() {
             // Use write_color to scale back to normal RGB scale
             write_color(std::cout, pixel_color);
 
-            //// Using color/vec3 class to make and print pixel
-            //color pixel_color(double(i) / (image_width - 1), double(j) / (image_height - 1), 0.25);
-            //write_color(std::cout, pixel_color);
-
-            ////auto r = double(i) / (image_width - 1);
-            ////auto g = double(j) / (image_height - 1);
-            ////auto b = 0.25;
-
-            ////int ir = static_cast<int>(255.999 * r);
-            ////int ig = static_cast<int>(255.999 * g);
-            ////int ib = static_cast<int>(255.999 * b);
-
-            ////// Display to console (will be written to .ppm file)
-            ////// Use .\RayTracing.ppm 1> Image.txt OR .\RayTracing.exe > Image.ppm
-            ////std::cout << ir << ' ' << ig << ' ' << ib << '\n';
         }
     }
 
@@ -69,9 +54,17 @@ int main() {
 color ray_color(const ray& r)
 {
     // Draw sphere if hit_sphere returns true
-    if (hit_sphere(point3(0, 0, -1), 0.5, r))
+    if (hit_sphere(point3(-0.75, 0, -1), 0.5, r))
     {
         return color(1, 0, 0);
+    }
+    else if (hit_sphere(point3(0, 0, -1), 0.5, r))
+    {
+        return color(0, 1, 0);
+    }
+    else if (hit_sphere(point3(0.75, 0, -1), 0.5, r))
+    {
+        return color(0, 0, 1);
     }
     // Unit direction object of ray r
     vec3 unit_direction = unit_vector(r.direction());
@@ -87,8 +80,12 @@ bool hit_sphere(const point3& center, double radius, const ray& r)
     vec3 oc = r.origin() - center; // (A−C)
     auto a = dot(r.direction(), r.direction()); // b*b
     auto b = 2.0 * dot(oc, r.direction()); // 2*b*(A−C)
-    auto c = dot(oc, oc) - radius * radius; // (A−C)*(A−C)−r^2
+    auto c = dot(oc, oc) - (radius * radius); // (A−C)*(A−C)−r^2
     // positive or negative of discriminant determines if sphere is hit (how many root there are)
     auto discriminant = b * b - 4 * a * c; 
+    if (discriminant > 0)
+    {
+        int test = 1;
+    }
     return (discriminant > 0);
 }
