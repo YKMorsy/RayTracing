@@ -3,9 +3,12 @@
 #include "vec3.h"
 
 #include <iostream>
+#include <algorithm>
+#include <vector>
 
 color ray_color(const ray& r);
 bool hit_sphere(const point3& center, double radius, const ray& r);
+bool hit_cube(const point3& center, double sideLength, const ray& r);
 
 int main() {
 
@@ -53,19 +56,26 @@ int main() {
 // Create ray_color function that takes in ray object and returns color object
 color ray_color(const ray& r)
 {
-    // Draw sphere if hit_sphere returns true
-    if (hit_sphere(point3(-0.75, 0, -1), 0.5, r))
+    //// Draw sphere if hit_sphere returns true
+    //if (hit_sphere(point3(-0.75, 0, -1), 0.5, r))
+    //{
+    //    return color(1, 0, 0);
+    //}
+    //else if (hit_sphere(point3(0, 0, -1), 0.5, r))
+    //{
+    //    return color(0, 1, 0);
+    //}
+    //else if (hit_sphere(point3(0.75, 0, -1), 0.5, r))
+    //{
+    //    return color(0, 0, 1);
+    //}
+    
+    // Draw cube if hit_cube returns true
+    if (hit_cube(point3(0, 0, -1),1, r))
     {
         return color(1, 0, 0);
     }
-    else if (hit_sphere(point3(0, 0, -1), 0.5, r))
-    {
-        return color(0, 1, 0);
-    }
-    else if (hit_sphere(point3(0.75, 0, -1), 0.5, r))
-    {
-        return color(0, 0, 1);
-    }
+    
     // Unit direction object of ray r
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5 * (unit_direction.y() + 1.0);
@@ -88,4 +98,22 @@ bool hit_sphere(const point3& center, double radius, const ray& r)
         int test = 1;
     }
     return (discriminant > 0);
+}
+
+// Cube creation method
+bool hit_cube(const point3& center, double sideLength, const ray& r)
+{
+    // max{|x-x_0|,|y-y_0|,|z-z_0|\}=a.
+
+    std::vector<double> r_direction{abs(r.direction().x() - center.x()), abs(r.direction().y() - center.y()), abs(r.direction().z() - center.z())};
+    double max_val = *max_element(std::begin(r_direction), std::end(r_direction));
+
+    if (max_val <= sideLength/2)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
